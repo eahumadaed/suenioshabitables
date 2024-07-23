@@ -1,0 +1,12 @@
+{% extends 'dashboard_base.html' %}
+{% block content %}
+<div class="container">
+    <h2>Eliminar Inmueble</h2>
+    <p>¿Estás seguro de que deseas eliminar el inmueble "{{ inmueble.nombre }}"?</p>
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Eliminar</button>
+        <a href="{% url 'mis_inmuebles' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

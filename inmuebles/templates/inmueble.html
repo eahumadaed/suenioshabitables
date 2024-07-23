@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% block title %}{{ inmueble.nombre }}{% endblock %}
+
+{% block content %}
+{% load static %}
+{% load humanize %}
+<style>
+    .estado-disponible {
+        color: green;
+        font-weight: bold;
+    }
+    .estado-otro {
+        color: red;
+    }
+</style>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6">
+            <img src="{{ inmueble.imagen_dinamica }}" class="img-fluid" alt="Imagen del inmueble" style="height: 500px;">
+        </div>
+        <div class="col-md-6">
+            <h3>{{ inmueble.nombre }}</h3><hr>
+            <p><strong>Descripción:</strong> {{ inmueble.descripcion }}</p>
+            <p>
+                <strong>Ubicación:</strong> 
+                {{ inmueble.direccion }}, {{ inmueble.comuna.nombre }}, {{ inmueble.region.nombre }}
+                <a href="https://www.google.com/maps/search/?api=1&query={{ inmueble.direccion|urlencode }},{{ inmueble.comuna.nombre|urlencode }},{{ inmueble.region.nombre|urlencode }}" target="_blank">
+                    <i class="fas fa-map-marker-alt"></i>
+                </a>
+            </p>
+            <p><strong>Superficie construida:</strong> {{ inmueble.m2_construidos }} m²</p>
+            <p><strong>Superficie total:</strong> {{ inmueble.m2_totales }} m²</p>
+            <p><strong>Estacionamientos:</strong> {{ inmueble.cantidad_estacionamientos }}</p>
+            <p><strong>Habitaciones:</strong> {{ inmueble.cantidad_habitaciones }}</p>
+            <p><strong>Baños:</strong> {{ inmueble.cantidad_banos }}</p>
+            <p><strong>Tipo de inmueble:</strong> {{ inmueble.get_tipo_inmueble_display }}</p>
+            <br>
+            <p><strong>Precio:</strong> ${{ inmueble.precio_mensual_arriendo|floatformat:0 }}</p>
+
+            <p><strong>Estado:</strong> <span class="{% if inmueble.estado == 'Disponible' %}estado-disponible{% else %}estado-otro{% endif %}">{{ inmueble.get_estado_display }}</span></p>
+
+            <hr>
+            <div class="mt-4">
+                {% if es_arrendador == 'Arrendador' %}
+                <a {% if user.is_authenticated  %} href="#" onclick="arrendarInmueble({{ inmueble.id }})" 
+                {% else %} href="#" data-toggle="modal" data-target="#loginModal" 
+                {% endif %} style="
+                {% if inmueble.estado == 'Disponible' %}{% else %}display:none;{% endif %}"  class="btn btn-primary mr-2">Arrendar</a>
+                <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#contactModal">Más Información</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <hr>
+</div>
+
+<!-- Modal para Arrendar -->
+<div class="modal fade" id="arrendarModal" tabindex="-1" role="dialog" aria-labelledby="arrendarModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="arrendarModalLabel">Arrendar Inmueble</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Felicidades, has arrendado esta propiedad. te contactaremos pronto. No! nos llames, nosotros te llamamos.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="location.reload();">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para Contacto -->
+<div class="modal fade" id="contactModal" tabindex="-1" role="dialog" aria-labelledby="contactModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="contactModalLabel">Formulario de Contacto</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="contactForm">
+          <div class="form-group">
+            <label for="name">Nombre</label>
+            <input type="text" class="form-control" id="name" placeholder="Tu nombre">
+          </div>
+          <div class="form-group">
+            <label for="email">Correo Electrónico</label>
+            <input type="email" class="form-control" id="email" placeholder="Tu correo electrónico">
+          </div>
+          <div class="form-group">
+            <label for="message">Mensaje</label>
+            <textarea class="form-control" id="message" rows="3" placeholder="Tu mensaje"></textarea>
+          </div>
+          <button type="button" class="btn btn-primary" onclick="sendContactForm()">Enviar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    function arrendarInmueble(inmuebleId) {
+        $.ajax({
+            url: '/api/arrendar/',
+            method: 'POST',
+            data: {
+                'inmueble_id': inmuebleId,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(response) {
+                if (response.success) {
+                    $('#arrendarModal').modal('show');
+                }
+            },
+            error: function() {
+                alert('Error al arrendar el inmueble. Inténtalo de nuevo.');
+            }
+        });
+    }
+
+    function sendContactForm() {
+        $('#contactForm').hide();
+        $('.modal-body').append('<p>Mensaje enviado.</p>');
+    }
+</script>
+{% endblock %}

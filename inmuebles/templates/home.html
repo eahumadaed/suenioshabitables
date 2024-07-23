@@ -1,0 +1,261 @@
+{% extends 'base.html' %}
+{% block title %}Inicio{% endblock %}
+
+
+{% block content %}
+{% load static %}
+{% load humanize %}
+
+<section id="home" class="welcome-hero">
+    <div class="container">
+        <div class="welcome-hero-txt">
+            <h2>EL MEJOR LUGAR PARA ENCONTRAR Y EXPLORAR <br> TODO LO QUE NECESITAS </h2>
+            <p>
+                Encuentra la mejor casa, departamento, hotel y mucho más con solo un clic
+            </p>
+        </div>
+        <div class="welcome-hero-serch-box no_movil">
+            <form action="/explorar/" method="get">
+                <div class="welcome-hero-form">
+                    <div class="single-welcome-hero-form">
+                        <h3>¿Qué buscas?</h3>
+                            <select id="tipo" name="tipo" class="form-control">
+                                <option value="casa">Casa</option>
+                                <option value="departamento">Departamento</option>
+                                <option value="oficina">Oficina</option>
+                            </select>
+                    </div>
+                    <div class="single-welcome-hero-form">
+                            <p>Region</p>
+                            <select name="region" id="region-select" class="form-control" onchange="updateComunas()">
+                                <option value="">En todas</option>
+                                {% for region in regiones %}
+                                <option value="{{ region.id }}">{{ region.nombre }}</option>
+                                {% endfor %}
+                            </select>
+                    </div>
+                    <div class="single-welcome-hero-form">
+                            <p>Comuna</p>
+                            <select name="comuna" id="comuna-select" class="form-control mt-3">
+                                <option value="">En todas</option>
+                            </select>
+                    </div>
+                    <div class="welcome-hero-serch">
+                        <button class="welcome-hero-btn" onclick="window.location.href='#'">
+                            Buscar  <i data-feather="search"></i> 
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<section id="list-topics" class="list-topics">
+    <div class="container text-center mt-5">
+        <div class="list-topics-content">
+            <ul>
+                <li>
+                    <div class="single-list-topics-content">
+                        <div class="single-list-topics-icon">
+                            <i class="fa-solid fa-house"></i>
+                        </div>
+                        <h2><a href="#">Casas</a></h2>
+                        <p>150 Disponibles</p>
+                    </div>
+                </li>
+                <li>
+                    <div class="single-list-topics-content">
+                        <div class="single-list-topics-icon">
+                            <i class="fa-regular fa-building"></i>
+                        </div>
+                        <h2><a href="#">Departamentos</a></h2>
+                        <p>214 Disponibles</p>
+                    </div>
+                </li>
+                <li>
+                    <div class="single-list-topics-content">
+                        <div class="single-list-topics-icon">
+                            <i class="fa-solid fa-briefcase"></i>
+                        </div>
+                        <h2><a href="#">Oficina</a></h2>
+                        <p>185 Disponibles</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+</section>
+
+<section id="works" class="works">
+    <div class="container">
+        <div class="section-header">
+            <h2>Cómo funciona</h2>
+            <p>Descubre cómo encontrar tu nuevo espacio</p>
+        </div><!--/.section-header-->
+        <div class="works-content">
+            <div class="row">
+                <div class="col-md-4 col-sm-6">
+                    <div class="single-how-works">
+                        <div class="single-how-works-icon">
+                            <i class="fa fa-search"></i>
+                        </div>
+                        <h2>Busca tu <span>lugar</span></h2>
+                        <p>
+                            Recorre nuestro catálogo como si estuvieras buscando la última galleta. <br><br> ¡Ese lugar especial está aquí!
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <div class="single-how-works">
+                        <div class="single-how-works-icon">
+                            <i class="fa fa-credit-card"></i>
+                        </div>
+                        <h2>Págalo <span>rápido</span></h2>
+                        <p>
+                            Con un par de clics y tu tarjeta de crédito, estarás más cerca de tus llaves. <br>¡Sin drama y sin lagrimas!
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <div class="single-how-works">
+                        <div class="single-how-works-icon">
+                            <i class="fa fa-key"></i>
+                        </div>
+                        <h2>Mudate Feliz</span></h2>
+                        <p>
+                            Múdate y empieza a disfrutar. <br><br>¡Tu nuevo lugar te espera para crear momentos inolvidables!
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</section>
+
+<section id="explore" class="explore">
+    <div class="container">
+        <div class="section-header">
+            <h2>Explora</h2>
+            <p>Descubre nuevos departamentos y casas en arriendo, y encuentra el hogar perfecto para ti</p>
+        </div>
+        <div class="explore-content">
+            <div class="row">
+                    {% for inmueble in disponibles %}
+                        <div class="col-md-4 col-sm-6">
+                            <div class="single-explore-item">
+                                <a href="{% url 'inmueble' inmueble.id %}">
+                                    <div class="single-explore-img">
+                                        {% if inmueble.inmuebleimagen_set.first %}
+                                            <img src="{{ inmueble.imagen_dinamica }}" alt="{{ inmueble.nombre }}">
+                                        {% endif %}
+                                    </div>
+                                </a>
+                                <div class="single-explore-txt bg-theme-1">
+                                    <h2>{{ inmueble.nombre }}</h2>
+                                    <div class="explore-person">
+                                        <div class="row">
+                                            <div class="col-sm-2">
+                                                <div class="explore-person-img">
+                                                    <a href="#">
+                                                        <img src="{% static 'assets/images/explore/person.png' %}" alt="explore person">
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-10">
+                                                <p>
+                                                    {{ inmueble.descripcion|truncatewords:50 }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="explore-open-close-part">
+                                        <p class="explore-rating-price">
+                                            <span class="explore-price-box">
+                                                <span style="margin-right: 5px;">Precio:</span>
+                                                <span class="explore-price">${{ inmueble.precio_mensual_arriendo|floatformat:0  }}</span>
+                                            </span>
+                                        </p>
+                                    </div>
+                                    <div class="explore-open-close-part">
+                                        <div class="row">
+                                            <div class="col-sm-5">
+                                                <button style="color:blue;" class="close-btn" onclick="window.location.href='#'">Disponible</button>
+                                            </div>
+                                            <div class="col-sm-7">
+                                                <div class="explore-map-icon">
+                                                    <a href="https://www.google.com/maps/search/?api=1&query={{ inmueble.direccion|urlencode }},{{ inmueble.comuna.nombre|urlencode }},{{ inmueble.region.nombre|urlencode }}" target="_blank"><i class="fa fa-map-marker"></i></a>
+                                                    
+
+
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+
+                    {% for inmueble in arrendados %}
+                    <div class="col-md-4 col-sm-6">
+                        <div class="single-explore-item">
+                            <a href="{% url 'inmueble' inmueble.id %}">
+                                <div class="single-explore-img">
+                                    {% if inmueble.inmuebleimagen_set.first %}
+                                        <img src="{{ inmueble.imagen_dinamica }}" alt="{{ inmueble.nombre }}">
+                                    {% endif %}
+                                </div>
+                            </a>
+                            <div class="single-explore-txt bg-theme-1">
+                                <h2>{{ inmueble.nombre }}</h2>
+                                <div class="explore-person">
+                                    <div class="row">
+                                        <div class="col-sm-2">
+                                            <div class="explore-person-img">
+                                                <a href="#">
+                                                    <img src="{% static 'assets/images/explore/person.png' %}" alt="explore person">
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-10">
+                                            <p>
+                                                {{ inmueble.descripcion|truncatewords:50 }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="explore-open-close-part">
+                                    <p class="explore-rating-price">
+                                        <span class="explore-price-box">
+                                            <span style="margin-right: 5px;">Precio:</span>
+                                            <span class="explore-price">${{ inmueble.precio_mensual_arriendo|floatformat:0  }}</span>
+                                        </span>
+                                    </p>
+                                </div>
+                                <div class="explore-open-close-part">
+                                    <div class="row">
+                                        <div class="col-sm-5">
+                                            <button class="close-btn" onclick="window.location.href='#'">Arrendado</button>
+                                        </div>
+                                        <div class="col-sm-7">
+                                            <div class="explore-map-icon">
+                                                <a href="https://www.google.com/maps/search/?api=1&query={{ inmueble.direccion|urlencode }},{{ inmueble.comuna.nombre|urlencode }},{{ inmueble.region.nombre|urlencode }}" target="_blank"><i class="fa fa-map-marker"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div> <!--/.row-->
+        </div>
+    </div><!--/.container-->
+</section><!--/.explore-->
+<!--explore end -->
+{% endblock %}

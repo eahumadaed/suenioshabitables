@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard {% endblock %}
+
+
+{% block content %}
+{% load static %}
+{% load humanize %}
+<div class="container">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <h1>Dashboard</h1>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                {% if user.tipo_usuario == 'Arrendatario' %}
+                    <li class="nav-item" style="margin-right:30px;">
+                        <a class="nav-link" href="{% url 'agregar_inmueble' %}">Agregar Inmueble</a>
+                    </li>
+                    <li class="nav-item" style="margin-right:30px;">
+                        <a class="nav-link" href="{% url 'mis_inmuebles' %}">Mis Inmuebles</a>
+                    </li>
+                {% elif user.tipo_usuario == 'Arrendador' %}
+                    <li class="nav-item" style="margin-right:30px;">
+                        <a class="nav-link" href="{% url 'mis_inmuebles' %}">Mis Inmuebles</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+    <div class="container mt-5">
+        {% block content2 %}
+        {% endblock %}
+    </div>
+</div>
+    {% endblock %}

@@ -1,0 +1,78 @@
+{% extends 'dashboard_base.html' %}
+{% block content2 %}
+<div class="container">
+    <h2>Modificar Inmueble</h2>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="nombre">Nombre</label>
+            <input type="text" class="form-control" id="nombre" name="nombre" value="{{ form.nombre.value }}" required>
+        </div>
+        <div class="form-group">
+            <label for="descripcion">Descripción</label>
+            <textarea class="form-control" id="descripcion" name="descripcion" rows="3" required>{{ form.descripcion.value }}</textarea>
+        </div>
+        <div class="form-group">
+            <label for="m2_construidos">M2 Construidos</label>
+            <input type="text" class="form-control" id="m2_construidos" name="m2_construidos" value="{{ form.m2_construidos.value }}">
+        </div>
+        <div class="form-group">
+            <label for="m2_totales">M2 Totales</label>
+            <input type="text" class="form-control" id="m2_totales" name="m2_totales" value="{{ form.m2_totales.value }}">
+        </div>
+        <div class="form-group">
+            <label for="cantidad_estacionamientos">Cantidad de Estacionamientos</label>
+            <input type="number" class="form-control" id="cantidad_estacionamientos" name="cantidad_estacionamientos" value="{{ form.cantidad_estacionamientos.value }}">
+        </div>
+        <div class="form-group">
+            <label for="cantidad_habitaciones">Cantidad de Habitaciones</label>
+            <input type="number" class="form-control" id="cantidad_habitaciones" name="cantidad_habitaciones" value="{{ form.cantidad_habitaciones.value }}">
+        </div>
+        <div class="form-group">
+            <label for="cantidad_banos">Cantidad de Baños</label>
+            <input type="number" class="form-control" id="cantidad_banos" name="cantidad_banos" value="{{ form.cantidad_banos.value }}">
+        </div>
+        <div class="form-group">
+            <label for="direccion">Dirección</label>
+            <input type="text" class="form-control" id="direccion" name="direccion" value="{{ form.direccion.value }}" required>
+        </div>
+        <div class="form-group">
+            <label for="comuna">Comuna</label>
+            <select class="form-control" id="comuna" name="comuna">
+                {% for comuna in comunas %}
+                <option value="{{ comuna.id }}" {% if form.comuna.value == comuna.id %}selected{% endif %}>{{ comuna.nombre }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="region">Región</label>
+            <select class="form-control" id="region" name="region">
+                {% for region in regiones %}
+                <option value="{{ region.id }}" {% if form.region.value == region.id %}selected{% endif %}>{{ region.nombre }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="tipo_inmueble">Tipo de Inmueble</label>
+            <select class="form-control" id="tipo_inmueble" name="tipo_inmueble">
+                <option value="casa" {% if form.tipo_inmueble.value == 'casa' %}selected{% endif %}>Casa</option>
+                <option value="departamento" {% if form.tipo_inmueble.value == 'departamento' %}selected{% endif %}>Departamento</option>
+                <option value="oficina" {% if form.tipo_inmueble.value == 'oficina' %}selected{% endif %}>Oficina</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="precio_mensual_arriendo">Precio Mensual de Arriendo</label>
+            <input type="text" class="form-control" id="precio_mensual_arriendo" name="precio_mensual_arriendo" value="{{ form.precio_mensual_arriendo.value }}" required>
+        </div>
+        <div class="form-group">
+            <label for="estado">Estado</label>
+            <select class="form-control" id="estado" name="estado">
+                <option value="Disponible" {% if form.estado.value == 'Disponible' %}selected{% endif %}>Disponible</option>
+                <option value="Arrendada" {% if form.estado.value == 'Arrendada' %}selected{% endif %}>Arrendada</option>
+                <option value="Eliminada" {% if form.estado.value == 'Eliminada' %}selected{% endif %}>Eliminada</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Modificar</button>
+    </form>
+</div>
+{% endblock %}

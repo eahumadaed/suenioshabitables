@@ -1,0 +1,34 @@
+{% extends 'dashboard_base.html' %}
+{% block content2 %}
+<div class="container">
+    <h2>Mis Inmuebles</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Dirección</th>
+                <th>Estado</th>
+                {% if not es_arrendador %}
+                <th>Acciones</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for inmueble in inmuebles %}
+            <tr>
+                <td>{{ inmueble.nombre }}</td>
+                <td>{{ inmueble.direccion }}</td>
+                <td>{{ inmueble.get_estado_display }}</td>
+                {% if not es_arrendador %}
+                <td>
+                    <a href="{% url 'modificar_inmueble' inmueble.id %}" class="btn btn-warning">Modificar</a>
+                    <a href="{% url 'eliminar_inmueble' inmueble.id %}" class="btn btn-danger">Eliminar</a>
+                    <a href="{% url 'agregar_imagen' inmueble.id %}" class="btn btn-primary">Agregar Imagen</a>
+                </td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
